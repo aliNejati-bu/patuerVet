@@ -90,29 +90,6 @@ export function unAuth(res) {
     );
 }
 
-export async function removeDubleRegisterUser(userRepository: IUserRepository, tweeterRealID: string) {
-    let user = await userRepository.findUserByTweeterRealID(tweeterRealID);
-
-    if (!user.isError) {
-        let tweeterUser = user.data.twitters.find(t => t.tweeterRealID == tweeterRealID);
-        if (tweeterUser)
-            await userRepository.deleteTwitter(user.data.email, tweeterUser.twitterId);
-    }
-}
-
-const cachedTweeter = [];
-
-export function getUserFromRealID(realID: string) {
-    return cachedTweeter.find(t => t.tweeterRealID == realID);
-}
-
-export function cacheTweeterUser(user: any) {
-    cachedTweeter.push(user);
-    setTimeout(() => {
-        cachedTweeter.splice(cachedTweeter.indexOf(user), 1);
-    }, 3600 * 1000);
-}
-
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/uploades/images');

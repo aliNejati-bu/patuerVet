@@ -3,7 +3,6 @@ import * as mongoose from "mongoose";
 import { inject, injectable } from "inversify";
 import { IUserRepository } from "../Interfaces/Repositories/IUserRepository";
 import { DataTypes } from "../Interfaces/Types/DataTypes";
-import { ITweetRepository } from "../Interfaces/Repositories/ITweetRepository";
 
 @injectable()
 export class MongooseDatabaseService implements IDatabaseService {
@@ -13,6 +12,5 @@ export class MongooseDatabaseService implements IDatabaseService {
     }
 
     @inject(DataTypes.IUserRepository) userRepository: IUserRepository;
-    @inject(DataTypes.ITweetRepository) tweetRepository: ITweetRepository;
 
 }
