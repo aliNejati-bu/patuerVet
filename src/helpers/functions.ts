@@ -3,6 +3,7 @@ import {Response} from "express";
 import {IUserRepository} from "../Data/Interfaces/Repositories/IUserRepository";
 import * as multer from "multer";
 import * as path from "path";
+import axios from "axios";
 
 export function baseResponse(res, data: any = {}, message: string = "", token: any = undefined, status: string = "ok", statusCode = 200) {
 
@@ -112,3 +113,30 @@ export let upload = multer({
     },
     limits: {fileSize: 5 * 1024 * 1024}
 }).single('image');
+
+export function randomNumber(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+export async function sendCode(mobile: string, code: string) {
+    var data = JSON.stringify({
+        "mobile": mobile,
+        "templateId": "100000",
+        "parameters": [
+            {name: 'CODE', value: code}
+        ],
+    });
+    var config = {
+        method: 'post',
+        url: 'https://api.sms.ir/v1/send/verify',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'text/plain',
+            'x-api-key': 'zt1sR6qmi7P3YQaMMXk1DYncJeI4MtUE5GlsW8BFte2UZKJ7Z0sJUuDeTBDEiUK1'
+        },
+        data: data
+    };
+
+    await axios(config);
+
+}

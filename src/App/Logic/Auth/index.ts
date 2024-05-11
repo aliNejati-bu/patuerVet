@@ -12,7 +12,9 @@ import {DataTypes} from "../../../Data/Interfaces/Types/DataTypes";
 import {IUserRepository} from "../../../Data/Interfaces/Repositories/IUserRepository";
 import {AdminTokenPayload} from "../../Entities/AdminTokenPayload";
 import {User} from "../../../Data/Entities/User";
+import {randomNumber, sendCode} from "../../../helpers/functions";
 
+let codes = {};
 
 @injectable()
 export class Auth {
@@ -49,8 +51,8 @@ export class Auth {
                 return new BaseAppResult(null, true, "", ResultStatus.NotFound)
             }
             if (user.data.password) {
-                const result = await this._passwordService.verify(password,user.data.password);
-                if (result){
+                const result = await this._passwordService.verify(password, user.data.password);
+                if (result) {
                     let token = await this._tokenService.createToken(new AdminTokenPayload(user.data._id as any as string, ["admin"], user.data.mobile).toPlainObject(), tokenSecret, +tokenLifeTime);
                     return new BaseAppResult(
                         {
@@ -61,8 +63,8 @@ export class Auth {
                         "",
                         ResultStatus.Success
                     )
-                }else {
-                    return new BaseAppResult(null,true,"",ResultStatus.NotMatch)
+                } else {
+                    return new BaseAppResult(null, true, "", ResultStatus.NotMatch)
 
                 }
             } else {
@@ -77,8 +79,8 @@ export class Auth {
                         "",
                         ResultStatus.Success
                     )
-                }else {
-                    return new BaseAppResult(null,true,"",ResultStatus.NotMatch)
+                } else {
+                    return new BaseAppResult(null, true, "", ResultStatus.NotMatch)
                 }
             }
         } catch (e) {
@@ -147,4 +149,51 @@ export class Auth {
         }
     }
 
+    async sendCode(mobile: string) {
+        try {
+            const user = await this._userRepository.findUserByMobile(mobile);
+            if (user.isError) {
+                return new BaseAppResult(null, true, "", ResultStatus.NotFound);
+            }
+            if (codes.hasOwnProperty(user.data.mobile) && codes[user.data.mobile]) {
+                return new BaseAppResult(null, true, "", ResultStatus.Duplicate);
+            }
+            let code = parseInt(randomNumber(100000, 999999));
+            codes[user.data.mobile] = {
+                code,
+                ...user.data
+            };
+            await sendCode(user.data.mobile, "" + code);
+            var func = function () {
+                codes[this.mobile] = null;
+            }
+            func = func.bind({
+                mobile: user.data.mobile
+            });
+            setTimeout(func, 60 * 3 * 1000);
+            return new BaseAppResult({}, false, "", ResultStatus.Success);
+        } catch (e) {
+            this._loggerService.error(e.originalError ? e.originalError : e);
+            return new BaseAppResult<User | null>(null, true, "Error.", ResultStatus.Unknown)
+        }
+    }
+
+
+    async verifyCode(mobile: string, code: string, password: string) {
+        try {
+            if (!codes.hasOwnProperty(mobile) || !codes[mobile]) {
+                return new BaseAppResult(null, true, "", ResultStatus.NotFound);
+            }
+            if (codes[mobile].code != code) {
+                return new BaseAppResult(null, true, "", ResultStatus.NotFound);
+            }
+
+            let hash = await this._passwordService.hash(password);
+            await this._userRepository.updateUserPassword(mobile, hash);
+            return new BaseAppResult(null, false, "", ResultStatus.Success);
+        } catch (e) {
+            this._loggerService.error(e.originalError ? e.originalError : e);
+            return new BaseAppResult<User | null>(null, true, "Error.", ResultStatus.Unknown)
+        }
+    }
 }

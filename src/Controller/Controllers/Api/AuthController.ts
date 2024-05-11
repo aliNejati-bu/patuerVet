@@ -39,6 +39,27 @@ class AuthController extends Controller {
         return baseResponse(res, result.result)
     }
 
+    async sendCode(req: Request, res: Response, next: NextFunction) {
+        let result = await this._auth.sendCode(req.body.mobile);
+        if (result.isError) {
+            if (result.ResultStatus == ResultStatus.Unknown) {
+                return serverErrorResponse(res, result.ResultStatus);
+            }
+            return baseResponse(res, {}, 'error.', undefined, result.ResultStatus, 403);
+        }
+        return baseResponse(res, {});
+    }
+
+    async verifyCode(req: Request, res: Response, next: NextFunction) {
+        let result = await this._auth.verifyCode(req.body.mobile, req.body.code, req.body.password);
+        if (result.isError) {
+            if (result.ResultStatus == ResultStatus.Unknown) {
+                return serverErrorResponse(res, result.ResultStatus);
+            }
+            return baseResponse(res, {}, 'error.', undefined, result.ResultStatus, 419);
+        }
+        return baseResponse(res, {});
+    }
 
 }
 
@@ -54,7 +75,14 @@ export default function (): AuthController {
 
     controller.addAction('/me', "get", controller.getMe, [
         verifyClientToken
-    ])
+    ]);
 
+    controller.addAction('/sendCode', 'post', controller.sendCode, [
+        wrapValidatorToMiddleware(controller._userValidator.sendCode)
+    ]);
+
+    controller.addAction('/verifyCode', "post", controller.verifyCode, [
+        wrapValidatorToMiddleware(controller._userValidator.verifyCode)
+    ])
     return controller;
 }

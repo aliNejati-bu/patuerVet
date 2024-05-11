@@ -25,12 +25,22 @@ export class UserValidator extends BaseValidator {
     }
 
 
-    verifyCode<T>(input): BaseValidatorAppResult<T | null> {
+    sendCode<T>(input): BaseValidatorAppResult<T | null> {
         let schema = joi.object().keys({
-            code: joi.number().required()
+            mobile: joi.string().required().max(255),
         });
         return this.createResult<T>(schema, input);
     }
+
+    verifyCode<T>(input): BaseValidatorAppResult<T | null> {
+        let schema = joi.object().keys({
+            mobile: joi.string().required().max(255),
+            code: joi.string().required().max(255),
+            password: joi.string().required().min(8).max(255),
+        });
+        return this.createResult<T>(schema, input);
+    }
+
 
     updateUser<T>(input): BaseValidatorAppResult<T | null> {
         let schema = joi.object().keys({

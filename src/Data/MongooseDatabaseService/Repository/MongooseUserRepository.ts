@@ -8,6 +8,24 @@ import {BaseDataError} from "../../Errors/BaseDataError";
 
 @injectable()
 export class MongooseUserRepository implements IUserRepository {
+    async updateUserPassword(mobile: string, password: string): Promise<BaseDataResult<boolean>> {
+        try {
+            let result = await MongooseUserModel.updateOne({
+                mobile: mobile
+            }, {
+                $set: {
+                    password: password
+                }
+            });
+            if (result.matchedCount == 0) {
+                return new BaseDataResult<boolean>(false, true);
+            }
+            return new BaseDataResult<boolean>(true, false);
+        } catch (e) {
+            throw new BaseDataError("Error while updating user", e);
+        }
+    }
+
     async findUserByMobile(mobile: string): Promise<BaseDataResult<User | null>> {
         try {
             const user = await MongooseUserModel.findOne({
