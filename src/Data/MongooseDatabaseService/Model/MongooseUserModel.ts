@@ -46,6 +46,10 @@ const userSchema = new Schema<User>({
     faaliat: {
         type: String,
         required: true
+    },
+    password:{
+        type:String,
+        default: null
     }
 });
 

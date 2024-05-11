@@ -10,16 +10,12 @@ import {BaseDataError} from "../../Errors/BaseDataError";
 export class MongooseUserRepository implements IUserRepository {
     async updateUserPassword(mobile: string, password: string): Promise<BaseDataResult<boolean>> {
         try {
-            let result = await MongooseUserModel.updateOne({
-                mobile: mobile
-            }, {
-                $set: {
-                    password: password
-                }
-            });
-            if (result.matchedCount == 0) {
+            let a = await MongooseUserModel.findOne({mobile});
+            if (!a) {
                 return new BaseDataResult<boolean>(false, true);
             }
+            a.password = password;
+            await a.save();
             return new BaseDataResult<boolean>(true, false);
         } catch (e) {
             throw new BaseDataError("Error while updating user", e);
