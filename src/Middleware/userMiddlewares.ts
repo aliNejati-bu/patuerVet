@@ -20,13 +20,7 @@ export async function verifyClientToken(req: Request, res: Response, next: NextF
 
     token = (token as string).replace('Bearer ', '')
 
-    let result = {
-        isError: false,
-        ResultStatus: ResultStatus.Unknown,
-        result: {
-            _id: "test"
-        }
-    };
+    let result = await _auth.verifyAdminToken(token);
 
     if (result.isError) {
         return baseResponse(res, null, "Token is not valid", undefined, result.ResultStatus, 401);

@@ -18,7 +18,7 @@ export class UserValidator extends BaseValidator {
 
     getToken<T>(input): BaseValidatorAppResult<T | null> {
         let schema = joi.object().keys({
-            email: joi.string().email().required().max(255),
+            mobile: joi.string().required().max(255),
             password: joi.string().required().max(255)
         });
         return this.createResult<T>(schema, input);

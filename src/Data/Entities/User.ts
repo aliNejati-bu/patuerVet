@@ -13,7 +13,8 @@ export class User {
         public phone: string,
         public tozihat: string,
         public vet: string,
-        public wtsapp: string
+        public wtsapp: string,
+        public password?: string
     ) {
     }
 }
