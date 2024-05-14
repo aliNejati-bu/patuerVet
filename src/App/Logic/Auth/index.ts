@@ -164,7 +164,7 @@ export class Auth {
                 ...user.data
             };
             await sendCode(user.data.mobile, "" + code);
-            var func = function () {
+            let func = function () {
                 codes[this.mobile] = null;
             }
             func = func.bind({

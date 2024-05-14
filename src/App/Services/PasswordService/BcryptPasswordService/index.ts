@@ -5,7 +5,7 @@ import {injectable} from "inversify";
 @injectable()
 export class BcryptPasswordService implements IPasswordService {
     async hash(password: string): Promise<string> {
-        return await bcrypt.hash(password, 15);
+        return await bcrypt.hash(password, 12);
     }
 
     async verify(password: string, hash: string): Promise<boolean> {

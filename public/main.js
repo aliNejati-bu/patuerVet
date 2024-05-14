@@ -1,4 +1,10 @@
-let serverAdr = 'http://127.0.0.1:3000';
+let serverAdr = 'http://localhost:3000';
+
+const urls = {
+    dashboard: "/dashboard",
+    login: "/login"
+}
+
 
 function endLoading() {
     document.querySelector('.loading').style.display = 'none';
@@ -8,10 +14,10 @@ function startLoading() {
     document.querySelector('.loading').style.display = 'flex';
 }
 
-function successesToast(msg) {
+function successesToast(msg, d = 2000) {
     Toastify({
         text: msg,
-        duration: 2000,
+        duration: d,
         newWindow: true,
         close: true,
         gravity: "top", // `top` or `bottom`
@@ -23,10 +29,10 @@ function successesToast(msg) {
     }).showToast();
 }
 
-function basicError(msg) {
+function basicError(msg, d = 10000) {
     Toastify({
         text: msg,
-        duration: 2000,
+        duration: d,
         newWindow: true,
         close: true,
         gravity: "top", // `top` or `bottom`
@@ -64,4 +70,12 @@ errors.forEach(e => {
 function addError(msg) {
     errors.push(msg);
     localStorage.errors = JSON.stringify({e: errors});
+}
+
+
+function saveToken(token, endAt) {
+    localStorage.setItem('token', JSON.stringify({
+        token,
+        endAt
+    }));
 }
