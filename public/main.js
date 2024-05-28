@@ -1,4 +1,4 @@
-let serverAdr = 'http://localhost:3000';
+let serverAdr = 'https://cl.pasteurvetlab.com';
 
 const urls = {
     dashboard: "/dashboard",
