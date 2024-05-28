@@ -10,7 +10,7 @@ COPY package*.json ./
 
 
 # If you are building your code for production
-RUN npm ci --omit=dev
+RUN npm i --omit=dev
 
 # Bundle app source
 COPY . .
