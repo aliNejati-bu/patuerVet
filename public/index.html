@@ -11,24 +11,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body>
-<div class="container">
-    <form id="register_form">
-        <div class="input-group mt-5">
-            <input name="name" type="text" class="form-control d-block" id="name" placeholder="Name" required>
-        </div>
-        <div class="input-group mt-2">
-            <input name="email" type="email" class="form-control d-block" id="email" placeholder="Email" required>
-        </div>
-        <div class='input-group mt-2'>
-            <input name="password" type="password" class="form-control d-block" id="password" placeholder="Password"
-                   required>
-        </div>
-        <div class='input-group mt-2'>
-            <button type="submit" class="btn btn-primary w-100">Register</button>
-        </div>
 
-    </form>
-</div>
 
 
 <div class="loading">
@@ -53,43 +36,6 @@
 <script src="/main.js"></script>
 <script>
     window.location.href = '/login';
-    window.addEventListener('load', () => {
-        endLoading();
-        let registerForm = document.querySelector('#register_form');
-        let [nameInput, emailInput, passwordInput] = [document.getElementById('name'), document.getElementById('email'), document.getElementById('password')];
-        registerForm.addEventListener('submit', (ev) => {
-            ev.preventDefault();
-            startLoading();
-            axios.post(serverAdr + "/api/v1/auth/register", {
-                name: nameInput.value,
-                password: passwordInput.value,
-                email: emailInput.value
-            }).then(r => {
-                successesToast("کاربر ایجاد شد.");
-                setTimeout(() => {
-                    window.location = '/login';
-
-                }, 2000);
-            }).catch(e => {
-                console.log(e);
-                Toastify({
-                    text: "کاربر از قبل وجود دارد.",
-                    duration: 2000,
-                    newWindow: true,
-                    close: true,
-                    gravity: "top", // `top` or `bottom`
-                    position: "left", // `left`, `center` or `right`
-                    stopOnFocus: true, // Prevents dismissing of toast on hover
-                    style: {
-                        background: "#b00058",
-                    },
-                }).showToast();
-                endLoading();
-            });
-
-        })
-
-    });
 </script>
 </body>
 </html>
