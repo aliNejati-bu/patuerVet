@@ -11,7 +11,7 @@ config();
 container.get<IDatabaseService>(DataTypes.IDatabaseService).connect()
     .then(() => {
         // run the server
-        run(process.env.PORT as any || 3000, process.env.SERVER || 'localhost').catch(err => {
+        run(process.env.PORT as any || 3000, process.env.HOST || 'localhost').catch(err => {
                 console.error(err);
                 process.exit(1);
             }
